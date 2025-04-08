@@ -249,6 +249,6 @@ EqVarDAG_TD_internal<-function(X){
   return(list(TO=done[-1],support=NULL))
 }
 
-library(QICD)
+# library(QICD)
 library(huge)
 library(igraph)

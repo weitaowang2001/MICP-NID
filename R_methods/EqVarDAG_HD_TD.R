@@ -212,6 +212,6 @@ getOrdering <- function(Y, J){
   return(Theta)
 }
 
-library(QICD)
+# library(QICD)
 library(huge)
 library(igraph)

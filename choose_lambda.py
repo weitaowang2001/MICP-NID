@@ -274,6 +274,7 @@ def optimization(input):
     Ln = log_term + trace + perspective
     k = np.sum(g_opt)+p
     bic = k*np.log(n)+Ln.getValue()*n
+    # bic = k * np.log(n) + 2*Ln.getValue()
 
     return bic, SHD_cpdag
 

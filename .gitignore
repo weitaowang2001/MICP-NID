@@ -1,0 +1,48 @@
+# Data files
+Data/*.DS_Store
+
+# Python cache directories and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# macOS system files
+.DS_Store
+
+# R history and session files
+.Rhistory
+.RData
+
+# IDE/editor directories and files
+.idea/
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Python environment-related files
+env/
+venv/
+*.env
+
+# Results and output files (if you don't want to track them)
+out.lp
+
+# Generated code and results
+*.pyc
+*.pyo
+
+# Log files
+*.log
+
+# Miscellaneous files
+*.bak
+Review/
+
+# Miscellaneous data and code
+ges_results_same_lambda.csv
+ges_test.py
+boxplots.py
+generate_moral_graph.py
+generate_moral_graph_alpha.py
+

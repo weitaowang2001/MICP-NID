@@ -6,7 +6,7 @@
 library(igraph)
 library(MASS)
 
-data.path = "E:\\Northwestern\\Research\\independent study 1\\dag\\gurobi\\Data\\RealWorldDatasetsTXu\\"
+data.path = "~/Downloads/projects/micodag/Data/RealWorldDatasetsTXu_30/"
 setwd(data.path)
 
 
@@ -15,15 +15,15 @@ filenames <- list.files(data.path)
 eweights <- c(-0.8, -0.6, 0.6, 0.8)
 sigvec <- c(0.5, 1, 1.5)
 nsamples <- 500
-ndata <- 10
+ndata <- 30
 
 #ii=3
 for(ii in 1:length(filenames)){
   fname = filenames[ii]
   
   ## read the edge list 
-  filename <- list.files(paste(data.path, fname, sep="\\"),"Sparse_Original")
-  elist <- read.csv(paste(data.path, fname, filename, sep="\\"))
+  filename <- list.files(paste(data.path, fname, sep="/"),"Sparse_Original")
+  elist <- read.csv(paste(data.path, fname, filename, sep="/"))
   
   ## create a graph object and get adjacency matrix
   gg <- graph_from_edgelist(as.matrix(elist))
@@ -44,7 +44,7 @@ for(ii in 1:length(filenames)){
   covmat <- infmat %*% covmat %*% t(infmat)
   
   ## generate data and write it into the same folder
-  for(jj in 1:ndata){
+  for(jj in 11:ndata){
     set.seed(jj)
     datmat <- mvrnorm(n=nsamples, mu=rep(0,nv), Sigma=covmat)
     

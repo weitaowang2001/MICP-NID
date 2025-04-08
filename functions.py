@@ -15,12 +15,14 @@ def read_alpha(m, n, alpha, k):
     :param k: number of iteration
     :return:
     """
-    file_path = 'E:/Northwestern/Research/independent study 1/dag/gurobi/Data/SyntheticDataNID/'
+    file_path = './Data/SyntheticDataNID_30/'
     file_name = "alpha/data_m_{}_n_{}_alpha_{}_iter_{}.csv".format(m, n, alpha, k)
     data = pd.read_csv(file_path + file_name, header=None)
     True_B = pd.read_table(file_path + "DAG_{}.txt".format(m), delimiter=" ", header=None)
     moral = pd.read_table(file_path + "Moral_DAG_{}.txt".format(m), delimiter=" ", header=None)
-    return data, True_B, moral
+    mgest = pd.read_table(f'./Data/SyntheticDataNID_30/alpha/m_{m}_n_{n}_alpha_{alpha}_superstructure_glasso_iter_{k}.txt', header=None, sep=',')
+
+    return data, True_B, moral, mgest
 
 
 def read_data(name, kk):
@@ -33,7 +35,7 @@ def read_data(name, kk):
 
         kk: kk-th dataset
     """
-    file_path = 'E:/Northwestern/Research/independent study 1/dag/gurobi/Data/RealWorldDatasetsTXu/'
+    file_path = './Data/RealWorldDatasetsTXu_30/'
     file_path += name + '/'
     file_name = glob.glob(file_path + f"/*n_500_iter_{kk}.csv")
     data = pd.read_csv(file_name[0], header=None)

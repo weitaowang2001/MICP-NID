@@ -50,10 +50,12 @@ compare.Graphs <- function(g1, g2)
   }
   s1 = m1 + t(m1)
   s1[s1 == 2] <- 1
+  
+  
   P = sum(m1)  # number of positive
   TP = sum(s1[m2 == 1] == 1)  # number of true positive
   TPR = TP/P
-  
+
   FP = sum(s1[m2 == 1] != 1)
   N = dim(m1)[1]**2 - P
   

@@ -25,8 +25,9 @@ from functions import *
 
 
 def read_early_stopping(m, n, k):
-    file_path = 'E:/Northwestern/Research/independent study 1/dag/gurobi/MIPDAGextentions/SyntheticDataNID/'
-    file_name = "data_m_{}_n_{}_iter_{}.csv".format(m, n, k)
+    # file_path = 'E:/Northwestern/Research/independent study 1/dag/gurobi/MIPDAGextentions/SyntheticDataNID/'
+    file_path = './Data/SyntheticDataNID_30/'
+    file_name = "earlystopping/data_m_{}_n_{}_iter_{}.csv".format(m, n, k)
     data = pd.read_csv(file_path + file_name, header=None)
     True_B = pd.read_table(file_path + "DAG_{}.txt".format(m), delimiter=" ", header=None)
     moral = pd.read_table(file_path + "Moral_DAG_{}.txt".format(m), delimiter=" ", header=None)
@@ -41,7 +42,7 @@ def optimization(input):
     data, True_B, moral = read_early_stopping(mm, nn, kk)
     n, p = data.shape
     # l = np.log(n)/n  # sparsity penalty parameter
-    l = np.log(p)/n*1
+    l = np.log(p)/n
     True_B_mat = ind2mat(True_B.values, p)
     E = [(i, j) for i in range(p) for j in range(p) if i != j]  # off diagonal edge sets
     list_edges = []
@@ -232,12 +233,17 @@ def optimization(input):
     m.Params.TimeLimit = 50*p
     m.Params.lazyConstraints = 1
     m.Params.OutputFlag = 1
+    s_ub = p*(p-1)/4
     if tau == 'early':
-        m.Params.MIPGapAbs = p*p/n
+        m.Params.MIPGapAbs = s_ub*np.log(p) / n
+        # m.Params.MIPGapAbs = p*p/n
     elif tau == '0':
         m.Params.MIPGapAbs = 0
+    elif tau == 'too_early':
+        m.Params.MIPGapAbs = p * s_ub * np.log(p) / n
     else:
         print("Wrong setting.")
+    # m.Params.TimeLimit = 10
     start = timeit.default_timer()
     m.optimize(logarithmic_callback)
     end = timeit.default_timer()
@@ -279,9 +285,9 @@ def optimization(input):
 
 if __name__ == '__main__':
     # print(optimization([20, 100, 1, "0"]))
-    m = [10, 20, 30, 40]
+    m = [35]
     n = 400
-    kk = 10
+    kk = 2
 
     # stopping = "0"
     # results = []
@@ -293,7 +299,7 @@ if __name__ == '__main__':
     # names = ["m", "n", "k", "stopping", "Time", "GAP", "RGAP", "d_cpdag", "SHDs", "TPR", "FPR"]
     # results_df = pd.DataFrame(results, columns=names)
     # print(results_df)
-    # results_df.to_csv("early_stopping_results_n400_%s_log(m)n.csv" % (stopping), header=False, index=False)
+    # results_df.to_csv("./experiment results/early stopping/1-30/early_stopping_results_n400_%s_log(m)n_1_30_test.csv" % (stopping), header=False, index=False)
 
     stopping = "early"
     results = []
@@ -304,5 +310,15 @@ if __name__ == '__main__':
             print([mm, n, ii, stopping, run_time, GAP, RGAP, SHD_cpdag, SHDs, TPR, FPR])
     results_df = pd.DataFrame(results)
     print(results_df)
-    results_df.to_csv("early_stopping_results_n400_%s_log(m)n.csv" % (stopping), header=False, index=False)
+    results_df.to_csv("./experiment results/early stopping/1-30/early_stopping_results_n400_%s_log(m)n_1_30_test.csv" % (stopping), header=False, index=False)
 
+    # stopping = "too_early"
+    # results = []
+    # for mm in [15,20,25,30]:
+    #     for ii in range(1, kk+1):
+    #         GAP, RGAP, SHD_cpdag, SHDs, TPR, FPR, run_time = optimization([mm, n, ii, stopping])
+    #         results.append([mm, n, ii, stopping, run_time, GAP, RGAP, SHD_cpdag, SHDs, TPR, FPR])
+    #         print([mm, n, ii, stopping, run_time, GAP, RGAP, SHD_cpdag, SHDs, TPR, FPR])
+    # results_df = pd.DataFrame(results)
+    # print(results_df)
+    # results_df.to_csv("./experiment results/early stopping/1-30/early_stopping_results_n400_%s_log(m)n_1_30.csv" % (stopping), header=False, index=False)

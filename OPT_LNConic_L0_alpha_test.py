@@ -96,7 +96,7 @@ def Optimization(Input):   # M: number of node N:number of samples
     # filename= '%s_Original_edges_%s_%s_%s.txt' %(graph_type, M, N, density)
     # name = "%s/%s" % (dataset_directory, filename)
     # Original_edges = np.loadtxt(name, delimiter=",")    # Read the True DAG
-    data, True_B, moral = read_alpha(M, N, alpha, kk)
+    data, True_B, moral, mgest = read_alpha(M, N, alpha, kk)
     x = data.values
     Original_edges = True_B.values
     
@@ -142,7 +142,11 @@ def Optimization(Input):   # M: number of node N:number of samples
             List_edges.append((int(M_edges[i][0]) - 1, int(M_edges[i][1]) - 1))
             List_edges.append((int(M_edges[i][1]) - 1, int(M_edges[i][0]) - 1))
     else:
-        filename = "mgest_PearsonCorEst.txt"
+        List_edges = []
+        for edge in mat2ind(mgest, M):
+            List_edges.append((edge[0], edge[1]))
+            List_edges.append((edge[1], edge[0]))
+        # filename = "mgest_PearsonCorEst.txt"
         # name = "%s/%s" % (dataset_directory, filename)
         # M_edges = np.loadtxt(name, delimiter=",")
         # List_edges = list(zip(*np.where(M_edges == 1)))
@@ -357,7 +361,7 @@ def Optimization(Input):   # M: number of node N:number of samples
     # Gurobi Parameters (default)
     m.params.TimeLimit = 50*v
     #m.params.TimeLimit = 1800  
-    m.params.MIPGap = 0.01
+    m.params.MIPGap = 0
     #m.params.MIPGap = math.log(v)/(100*math.log(2.718))    
     #m.params.Threads =4
     m.params.OutputFlag = 1
@@ -540,17 +544,17 @@ if __name__ == "__main__":
     # Dataset = "5rain"#change here
 
     results = []
-    for mm in [10,15,20]:
+    for mm in [10]:
         for nn in [100]:
             for Alpha in [1,2,4]:
-                for kk in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+                for kk in range(1, 31):
                     Input = [mm, nn, Alpha, kk]
                     print(Input)
                     results.append(Optimization(Input))
     names = ["m", "n", "alpha", "k", "lambda", "Time", "RGAP", "d_cpdag", "SHDs", "TPR", "FPR"]
     results_df = pd.DataFrame(results, columns=names)
 
-    results_df.to_csv("./alpha_results/MISOCP_alpha_results_4log(m).csv", index=False)
+    results_df.to_csv("./experiment results/variance difference level/1-30/MISOCP_alpha_results_4log(m)_1_30_new.csv", index=False)
 
     # for i in [1]:
     #     dt = i + 1

@@ -7,15 +7,15 @@ library(igraph)
 library(MASS)
 
 
-data.path = "E:\\Northwestern\\Research\\independent study 1\\dag\\gurobi\\Data\\SyntheticDataNID"
+data.path = "/Users/tongxu/Downloads/projects/micodag/Data/SyntheticDataNID_30"
 setwd(data.path)
 
 eweights <- c(-0.8, -0.6, 0.6, 0.8)
 sigvec <- c(0.5, 1, 1.5)
 nsamples <- 400
-ndata <- 10
+ndata <- 30
 
-m_list = c(10,20,30)
+m_list = c(35)
 filenames <- list.files(data.path, "^D")  # DAG edge files starting with D.
 for (i in c(1:length(m_list))){
   m = m_list[i]
@@ -46,7 +46,7 @@ for (i in c(1:length(m_list))){
     datmat <- mvrnorm(n=nsamples, mu=rep(0,nv), Sigma=covmat)
     
     datfilename <- paste0(
-      paste("data","m",m, "n", nsamples, "iter", jj, sep="_"), ".csv")
+      paste("earlystopping/data","m",m, "n", nsamples, "iter", jj, sep="_"), ".csv")
     write.table(datmat, datfilename, sep = ",", 
                 row.names=FALSE, col.names=FALSE)
   }

@@ -309,6 +309,6 @@ cv_clime<-function(X){
 }
 
 
-library(QICD)
+# library(QICD)
 library(huge)
 library(igraph)

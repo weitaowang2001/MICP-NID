@@ -9,12 +9,12 @@ library(igraph)
 library(pcalg)
 
 # import helper functions
-source("E:/Northwestern/Research/independent study 1/dag/gurobi/R_methods/helper_functions.R")
-source("E:/Northwestern/Research/independent study 1/dag/gurobi/R_methods/EqVarDAG_TD.R")
+source("/Users/tongxu/Downloads/projects/micodag/R_methods/helper_functions.R")
+source("/Users/tongxu/Downloads/projects/micodag/R_methods/EqVarDAG_TD.R")
 
 
-setwd("E:/Northwestern/Research/independent study 1/dag/gurobi")
-dataset.folder <- "E:/Northwestern/Research/independent study 1/dag/gurobi/Data/SyntheticDataNID/"
+setwd("/Users/tongxu/Downloads/projects/micodag")
+dataset.folder <- "/Users/tongxu/Downloads/projects/micodag/Data/SyntheticDataNID_30/"
 
 #####################################
 # Run for each dataset
@@ -27,14 +27,19 @@ for (mm in c(10, 15, 20)) {
   print(mm)
   for (alpha in c(1,2,4)) {
     # collect file paths
-    for (kk in c(1:10)) {
+    for (kk in c(1:30)) {
       data.file = list.files(paste0(dataset.folder,"/alpha"), paste0("data_m_", mm, "_n_100_alpha_", alpha, "_iter_", kk))[1]
       true.graph.file = paste0("DAG_", mm, ".txt")
       true.moral.file = paste0("Moral_DAG_", mm, ".txt")
+      mgest.file = paste0(dataset.folder,"/alpha/","m_", mm, "_n_100_alpha_", alpha, "_superstructure_glasso_iter_", kk, ".txt")
+      
       
       X = as.matrix(read.csv(paste0(dataset.folder,"alpha/",data.file), header=FALSE))
       true.graph = read.table(paste0(dataset.folder, true.graph.file), header=FALSE, sep=" ")
       moral.graph = read.table(paste0(dataset.folder, true.moral.file), header=FALSE, sep=" ")
+      est.moral.graph = read.table(mgest.file, header=FALSE, sep=",")
+      est.moral.graph = as.matrix(est.moral.graph, dimnames = NULL)
+      est.moral.graph = matrix(as.logical(est.moral.graph), nrow=dim(X)[2], ncol=dim(X)[2])
       
       # run
       start_time <- Sys.time()
@@ -65,7 +70,7 @@ for (mm in c(10, 15, 20)) {
       SHDs <- shds(graph_ori, graph_pred)
       rates <- compare.Graphs(graph_ori, graph_pred)
       
-      result <- list(network=mm,alpha=alpha,instance=kk, time=TIME, d_cpdag=d_cpdag, SHD=SHD, SHDs=SHDs, TPR=rates$TPR, FPR=rates$FPR)
+      result <- list(m=mm,alpha=alpha,k=kk, Time=TIME, d_cpdag=d_cpdag, SHD=SHD, SHDs=SHDs, TPR=rates$TPR, FPR=rates$FPR)
       print(result)
       results = rbind(results, result)
     }
@@ -74,4 +79,4 @@ for (mm in c(10, 15, 20)) {
 
 
 # write the results into a csv file
-write.csv(results, "./R_methods/EqVarDAG-TD_alpha_results.csv",row.names=FALSE)
+write.csv(results, "./experiment results/variance difference level/1-30/EqVarDAG-TD_alpha_results_1_30.csv",row.names=FALSE)

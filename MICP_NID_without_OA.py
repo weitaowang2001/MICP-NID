@@ -265,17 +265,16 @@ def optimization(input):
 
 if __name__ == '__main__':
     # datasets = ['1dsep', '2asia', '3bowling', '4insuranceSmall', '5rain', '6cloud', '7funnel', '8galaxy', '9insurance', '10factors', '11hfinder', '12hepar']
-    datasets = ['4insuranceSmall', '10factors', '11hfinder', '12hepar']
+    datasets = ['12hepar']
     results = []
     for dataset in datasets:
-        for kk in range(1, 11):
-            results_i = optimization([dataset, 'true', 1])
+        for kk in range(30, 31):
+            results_i = optimization([dataset, 'true', kk])
             results.append((dataset, kk) + results_i)
             print(dataset, kk, results_i)
-            print(pd.DataFrame(results))
-    df = pd.DataFrame(results)
+    df = pd.DataFrame(results, columns=['network', 'k', 'RGAP', 'd_cpdag', 'SHDs', 'TPR', 'FPR', 'Time'])
     print(df)
-    # df.to_csv("OA_compare_results.csv", index=False)
+    df.to_csv("./experiment results/comparison between OA and default/1-30/MICP-NID-Perspective_withoutOA_true_12log(m)n_1_30.csv", header=True, index=False)
 
 
 

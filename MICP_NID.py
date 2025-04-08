@@ -30,6 +30,7 @@ def optimization(input):
     data, True_B, moral, mgest = read_data(dataset, kk)
     n, p = data.shape
     l = 12 * np.log(p) / n  # sparsity penalty parameter
+    # l = np.log(n) / n/2
     True_B_mat = ind2mat(True_B.values, p)
     E = [(i, j) for i in range(p) for j in range(p) if i != j]  # off diagonal edge sets
     list_edges = []
@@ -49,8 +50,8 @@ def optimization(input):
     G_moral.add_edges_from(list_edges)
 
     non_edges = list(set(E) - set(list_edges))
-    Sigma_hat = data.values.T @ data.values / n
-
+    # Sigma_hat = data.values.T @ data.values / n
+    Sigma_hat = np.cov(data.values.T)
     ############################## Find Delta and Mu ########################################
     #########################################################################################
 
@@ -264,12 +265,15 @@ if __name__ == '__main__':
     # print(optimization(['9insurance', 'corest']))
     # print(optimization(['10factors', 'true']))
     results = []
-    # '1dsep', '2asia', '3bowling', '5rain', '6cloud', '7funnel', '8galaxy', '9insurance', '10actors', '11hfinder', '12hepar'
-    for dataset in ['6cloud']:
-        for kk in range(1,2):
-            results_i = optimization([dataset, 'true', kk])
-            results.append(results_i)
-            print(dataset, kk, results_i)
+    # '1dsep', '2asia', '3bowling', '5rain', '6cloud', '7funnel', '8galaxy', '9insurance', '10factors', '11hfinder', '12hepar'
+    # '1dsep', '2asia', '3bowling', '4insuranceSmall','5rain', '6cloud', '7funnel', '8galaxy', '9insurance', '10factors', '11hfinder', '12hepar'
+    for dataset in ['1dsep', '2asia', '3bowling', '4insuranceSmall','5rain', '6cloud', '7funnel', '8galaxy']:
+        for kk in range(1, 11):
+            results_i = optimization([dataset, 'est', kk])
+            print([dataset, kk] + list(results_i))
+            results.append([dataset, kk] + list(results_i))
         print(pd.DataFrame(results))
+        df = pd.DataFrame(results, columns=['network', 'k', 'RGAP', 'd_cpdag', 'SHDs', 'TPR', 'FPR', 'Time'])
+        df.to_csv('./experiment results/comparison to other benchmarks/MICP-NID-Perspective_est_12log(m)n_11_30.csv', index=False, header=True)
         # print(optimization(['4insuranceSmall', 'corest']))
-
+        #

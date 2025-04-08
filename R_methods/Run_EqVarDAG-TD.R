@@ -11,12 +11,12 @@ library(igraph)
 library(pcalg)
 
 # import helper functions
-source("E:/Northwestern/Research/independent study 1/dag/gurobi/R_methods/helper_functions.R")
-source("E:/Northwestern/Research/independent study 1/dag/gurobi/R_methods/EqVarDAG_TD.R")
+source("/Users/tongxu/Downloads/projects/micodag/R_methods/helper_functions.R")
+source("/Users/tongxu/Downloads/projects/micodag/R_methods/EqVarDAG_TD.R")
 
 
-setwd("E:/Northwestern/Research/independent study 1/dag/gurobi")
-dataset.folder <- "E:/Northwestern/Research/independent study 1/dag/gurobi/Data/RealWorldDatasetsTXu/"
+setwd("/Users/tongxu/Downloads/projects/micodag")
+dataset.folder <- "/Users/tongxu/Downloads/projects/micodag/Data/RealWorldDatasetsTXu_30/"
 datasets <- list.files(dataset.folder) # name of each dataset
 
 #####################################
@@ -29,16 +29,21 @@ results <- data.frame()
 for (dataset in datasets) {
   print(dataset)
   # collect file paths
-  for (kk in c(1:10)) {
-    data.file = list.files(paste(dataset.folder,dataset,sep="\\"), paste0("n_500_iter_", kk))[1]
-    true.graph.file = list.files(paste(dataset.folder,dataset,sep="\\"), "Original")
-    # mgest.file = list.files(paste(dataset.folder,dataset,sep="\\"), "mgest_PearsonCorEst.txt")
-    true.moral.file = list.files(paste(dataset.folder,dataset,sep="\\"), "Sparse_Moral")
+  for (kk in c(1:30)) {
+    data.file = list.files(paste(dataset.folder,dataset,sep="/"), paste0("n_500_iter_", kk))[1]
+    true.graph.file = list.files(paste(dataset.folder,dataset,sep="/"), "Original")
+    mgest.file = list.files(glue("{dataset.folder}{dataset}/"), glue("superstructure_glasso_iter_{kk}.txt"))
+    true.moral.file = list.files(paste(dataset.folder,dataset,sep="/"), "Sparse_Moral")
     
-    X = as.matrix(read.csv(paste(dataset.folder,dataset, data.file, sep="\\"), header=FALSE))
-    true.graph = read.table(paste(dataset.folder,dataset,true.graph.file, sep="\\"), header=FALSE, sep=",")
-    moral.graph = read.table(paste(dataset.folder,dataset,true.moral.file, sep="\\"), header=FALSE, sep=",")
+    X = as.matrix(read.csv(paste(dataset.folder,dataset, data.file, sep="/"), header=FALSE))
+    true.graph = read.table(paste(dataset.folder,dataset,true.graph.file, sep="/"), header=FALSE, sep=",")
+    moral.graph = read.table(paste(dataset.folder,dataset,true.moral.file, sep="/"), header=FALSE, sep=",")
+    est.moral.graph = read.table(paste(dataset.folder,dataset,mgest.file, sep="/"), header=FALSE, sep=",")
+    est.moral.graph = as.matrix(est.moral.graph, dimnames = NULL)
+    est.moral.graph = matrix(as.logical(est.moral.graph), nrow=dim(X)[2], ncol=dim(X)[2])
+    p <- dim(X)[2]
     
+    est.moral.graph = !est.moral.graph
     # run
     start_time <- Sys.time()
     result <- EqVarDAG_TD(X)
@@ -81,4 +86,4 @@ for (dataset in datasets) {
 # writeLines(mylist_str, EqVarDAG-TD_results.txt")
 
 # write the results into a csv file
-write.csv(results, "EqVarDAG-TD_results.csv",row.names=FALSE)
+write.csv(results, "./experiment results/comparison to other benchmarks/1-30/EqVarDAG-TD_results_1_30.csv",row.names=FALSE)

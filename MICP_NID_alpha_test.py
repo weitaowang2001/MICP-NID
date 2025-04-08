@@ -28,10 +28,9 @@ def optimization(input):
     alpha = input[2]
     kk = input[3]
 
-    est = 'true'
-    mgest = None  # only use true moral graph for this test
+    est = 'est'
 
-    data, True_B, moral = read_alpha(M, N, alpha, kk)
+    data, True_B, moral, mgest = read_alpha(M, N, alpha, kk)
     n, p = data.shape
     l = 4*np.log(p) / n  # sparsity penalty parameter
     True_B_mat = ind2mat(True_B.values, p)
@@ -53,7 +52,8 @@ def optimization(input):
     G_moral.add_edges_from(list_edges)
 
     non_edges = list(set(E) - set(list_edges))
-    Sigma_hat = data.values.T @ data.values / n
+    # Sigma_hat = data.values.T @ data.values / n
+    Sigma_hat = np.cov(data.values.T)
 
     ############################## Find Delta and Mu ########################################
     #########################################################################################
@@ -226,7 +226,7 @@ def optimization(input):
 
     # Solve
     m.Params.TimeLimit = 50*p
-    # m.Params.MIPGapAbs = p * p / n
+    # m.Params.MIPGapAbs = p * np.log(p) / n
     m.Params.lazyConstraints = 1
     m.Params.OutputFlag = 1
     start = timeit.default_timer()
@@ -268,11 +268,11 @@ if __name__ == '__main__':
     # print(optimization([10, 100, 4, 1]))
 
     results = []
-    for mm in [10, 15]:
+    for mm in [10,15,20]:
         for nn in [100]:
             for Alpha in [1,2,4]:
                 # for kk in [10]:
-                for kk in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
+                for kk in range(1, 31):
                     Input = [mm, nn, Alpha, kk]
                     result = optimization(Input)
                     result_i = Input + list(result)
@@ -282,4 +282,4 @@ if __name__ == '__main__':
     results_df = pd.DataFrame(results, columns=names)
     print(results_df)
 
-    results_df.to_csv("./alpha_results/MISOCP_NID_OA_alpha_results_log(m)n.csv", index=False)
+    # results_df.to_csv("./experiment results/variance difference level/1-30/micodag_alpha_results_4log(m)n.csv", index=False)

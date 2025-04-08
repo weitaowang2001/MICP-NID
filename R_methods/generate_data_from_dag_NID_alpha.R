@@ -8,14 +8,14 @@ library(igraph)
 library(MASS)
 
 
-data.path = "E:\\Northwestern\\Research\\independent study 1\\dag\\gurobi\\Data\\SyntheticDataNID"
+data.path = "/Users/tongxu/Downloads/projects/micodag/Data/SyntheticDataNID_30"
 setwd(data.path)
 
 alphas <- c(1,2,4)
 eweights <- c(-0.8, -0.6, 0.6, 0.8)
 # sigvec <- c(0.5, 1, 1.5)
-nsamples <- 400
-ndata <- 10
+nsamples <- 100
+ndata <- 30
 
 m_list = c(10,15,20)
 # filenames <- list.files(data.path, "^D")  # DAG edge files starting with D.
@@ -47,12 +47,12 @@ for (i in c(1:length(m_list))){
   covmat <- infmat %*% covmat %*% t(infmat)
   
   ## generate data and write it into the same folder
-  for(jj in 1:ndata){
+  for(jj in 11:ndata){
     set.seed(jj)
     datmat <- mvrnorm(n=nsamples, mu=rep(0,nv), Sigma=covmat)
     
     datfilename <- paste0(
-      paste(".\\alpha\\data","m",m, "n", nsamples, "alpha", alpha, "iter", jj, sep="_"), ".csv")
+      paste("./alpha/data","m",m, "n", nsamples, "alpha", alpha, "iter", jj, sep="_"), ".csv")
     write.table(datmat, datfilename, sep = ",", 
                 row.names=FALSE, col.names=FALSE)
   }

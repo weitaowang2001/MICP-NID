@@ -352,7 +352,7 @@ def Optimization(Input):   # M: number of node N:number of samples
     # Gurobi Parameters (default)
     m.params.TimeLimit = 50*v
     #m.params.TimeLimit = 1800  
-    m.params.MIPGap = 0.01
+    # m.params.MIPGap = 0.01
     #m.params.MIPGap = math.log(v)/(100*math.log(2.718))    
     #m.params.Threads =4
     m.params.OutputFlag = 1
@@ -529,8 +529,7 @@ def Optimization(Input):   # M: number of node N:number of samples
 if __name__ == "__main__":
     # m = [6,8,9,15,14,16,18,20,27,27]
     m = [6, 8, 9, 15, 14, 16, 18, 20, 27, 27, 56, 70]
-    datasets = ['1dsep', '2asia', '3bowling', '4insuranceSmall', '5rain', '6cloud', '7funnel', '8galaxy', '9insurance',
-                '10factors', '11hfinder', '12hepar']
+    datasets = ['1dsep', '2asia', '3bowling', '4insuranceSmall', '5rain', '6cloud', '7funnel', '8galaxy', '9insurance','10factors', '11hfinder', '12hepar']
     # dt= 5#change here
     # Dataset = "5rain"#change here
     #
@@ -556,6 +555,6 @@ if __name__ == "__main__":
 
 
     results = []
-    Input = ['1dsep', 'true', 1, 5*np.log(m[0])]
+    Input = ['1dsep', 'true', 10, 12*np.log(m[0])]
     results.append(Optimization(Input))
     print(pd.DataFrame(results))
